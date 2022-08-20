@@ -1,0 +1,35 @@
+// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+{
+	"dockerFile": "Dockerfile-dev",
+	
+	// Use 'settings' to set *default* container specific settings.json values on container create. 
+	// You can edit these settings after create using File > Preferences > Settings > Remote.
+	"settings": { 
+		// This will ignore your local shell user setting for Linux since shells like zsh are typically 
+		// not in base container images. You can also update this to an specific shell to ensure VS Code 
+		// uses the right one for terminals and tasks. For example, /bin/bash (or /bin/ash for Alpine).
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+
+	"forwardPorts": [5000, 5001, 5050],
+
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace/hasmart,type=bind,consistency=cached",
+
+	"workspaceFolder": "/workspace/hasmart",
+
+	"remoteEnv": {
+		"ASPNETCORE_Kestrel__Certificates__Default__Password": "c3rtp455w0rd",
+		"ASPNETCORE_Kestrel__Certificates__Default__Path": "/workspace/hasmart/certs/https/hasmartapi.pfx"
+	},
+
+	"containerUser": "vscode",
+
+	// Uncomment the next line if you want to keep your containers running after VS Code shuts down.
+	// "shutdownAction": "none",
+
+	// Uncomment the next line to run commands after the container is created - for example installing git.
+	"postCreateCommand": "dotnet restore && dotnet dev-certs https -ep /workspace/hasmart/certs/https/hasmartapi.pfx -p c3rtp455w0rd",
+
+	// Add the IDs of extensions you want installed when the container is created in the array below.
+	"extensions": ["ms-vscode.csharp", "Leopotam.csharpfixformat", "aaron-bond.better-comments", "wayou.vscode-todo-highlight", "codezombiech.gitignore", "eamodio.gitlens"]
+}

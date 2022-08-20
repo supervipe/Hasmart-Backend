@@ -1,0 +1,40 @@
+version: '3'
+services:
+  api:
+    build: .
+    ports:
+    - "8080:80"
+    - "8081:443"
+    links:
+    - db_prod
+    - is
+    env_file:
+    - Production.env
+    networks: 
+        - hasmartnet
+  db_prod:
+    build:
+        context: .
+        dockerfile: Dockerfile-sql
+    environment: 
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=P455w0rd
+    ports: 
+        - "2020:2020"
+    volumes:
+          - ./DB_VolumePROD:/var/opt/mssql/data/
+    networks: 
+        - hasmartnet
+  is:
+    build:
+        context: .
+        dockerfile: Dockerfile-is4
+    environment:
+        - ASPNETCORE_URLS=http://0.0.0.0:5050
+    ports:
+        - "5050:5050"
+    networks:
+        - hasmartnet
+networks: 
+    hasmartnet:
+        

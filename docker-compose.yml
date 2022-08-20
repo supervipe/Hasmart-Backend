@@ -1,0 +1,41 @@
+version: '3'
+services:
+  api:
+    build: .
+    ports:
+    - "8080:80"
+    - "8081:443"
+    links:
+    - db
+    - is
+    env_file:
+    - TestProductionDB.env
+    networks: 
+        - hasmartnet
+  db:
+    build:
+        context: .
+        dockerfile: Dockerfile-sql
+    environment: 
+        - ACCEPT_EULA=Y
+        - MSSQL_SA_PASSWORD=P455w0rd
+    user: root
+    ports: 
+        - "1433:1433"
+    volumes:
+          - ./DB_Volume:/var/opt/mssql/data/
+    networks: 
+        - hasmartnet
+  is:
+    build:
+        context: .
+        dockerfile: Dockerfile-is4
+    environment:
+        - ASPNETCORE_URLS=http://0.0.0.0:5050
+    ports:
+        - "5050:5050"
+    networks:
+        - hasmartnet
+networks: 
+    hasmartnet:
+        
